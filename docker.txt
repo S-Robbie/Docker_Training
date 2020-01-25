@@ -1,0 +1,65 @@
+
+#GIT command to check out the files missing in local repo
+$ git checkout .
+
+#login using password
+sudo passwd root
+
+#enter into root
+$ sudo su -
+
+
+#Set the proxy on the Ubuntu guest server (for HP network) as below:
+$ vi /etc/profile
+#Add the following lines at the end
+  export http_proxy="http://16.167.28.199:8080"
+  export https_proxy="http://16.167.28.199:8080"
+
+#Source the /etc/profile file to bring the changes into force immediately
+$ source /etc/profile
+
+#Ensure that the above proxy variables are set by echoing respective variables and also try the following command
+$ echo $http_proxy
+$ echo $http_proxy
+$ wget http://google.com   //You should see the following output
+--2019-11-02 11:14:37--  http://google.com/
+Resolving google.com (google.com)... 172.217.163.110, 2404:6800:4007:80d::200e
+Connecting to google.com (google.com)|172.217.163.110|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: http://www.google.com/ [following]
+--2019-11-02 11:14:40--  http://www.google.com/
+Resolving www.google.com (www.google.com)... 172.217.163.68, 2404:6800:4007:80c::2004
+Connecting to www.google.com (www.google.com)|172.217.163.68|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [text/html]
+Saving to: ‘index.html.1’
+
+index.html.1                                           [ <=>                                                                                                             ]  13.71K  --.-KB/s    in 0.03s   
+
+2019-11-02 11:14:40 (468 KB/s) - ‘index.html.1’ saved [14042]
+
+#For home network, set the proxy variables to null as following and try wget http://google.com again
+$ export http_proxy=""
+$ export https_proxy=""
+
+#To set up the DNS configuration...install dns-mask
+
+#SSH to 15.153.133.98 and copy the nameservers from /etc/resolv.conf
+$ vi /etc/resolv.conf
+# Add the following lines to set the default DNS servers within HP network
+nameserver 16.110.135.51
+nameserver 16.110.135.52
+
+#Once the system is able to access internet do an update as...
+$ apt-get update
+
+#By default, ifconfig is not available on ubuntu image, so need to install...
+$ apt-get install net-tools
+
+#Also, need to install SSH server as below:
+$ apt-get install openssh-server
+
+#Login as root and enable/start the SSH service
+$ su
+$ systemctl enable ssh.service
+$ systemctl start ssh.service
